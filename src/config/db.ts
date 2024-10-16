@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize'
 
-const sequelize = new Sequelize('toursgru_intranet', 'toursgru_intranet', 'u*HLvRK^U%Fx', {
-  host: '158.69.3.111',
+const sequelize = new Sequelize('contine2_petapp', 'contine2_petapp', 'K]{Q~Rq!L_&F', {
+  host: '192.95.39.30',
   dialect: 'mysql',
   logging:false
 });

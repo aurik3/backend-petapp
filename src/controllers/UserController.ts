@@ -2,14 +2,18 @@ import type { Response, Request } from 'express'
 import User from '../models/User'
 import { encrypt } from '../middlewares/hash';
 
-
 export class UserController {
 
     static getUsers = async (req: Request, res: Response) => {
         await User.sync();
         try {
             const users = await User.findAll()
-            res.json(users)
+            const result =users.map(user=>({
+                nombre:user.name,
+                usuario:user.username,
+                correo:user.email           
+            }))
+            res.json(result)
         } catch (error) {
             throw new Error(`Error al listar los usuarios, error: ${error}`)
         }
@@ -26,7 +30,12 @@ export class UserController {
                     id
                 }
             })
-            res.json(user)
+            const result ={
+                nombre:user.name,
+                usuario:user.username,
+                correo:user.email           
+            }
+            res.json(result)
         } catch (error) {
             throw new Error(`Error al listar los usuarios, error: ${error}`)
         }
@@ -39,15 +48,14 @@ export class UserController {
 
         const userExists = await User.findOne({
             where: {
-                username,
-                email
+                username
             }
         })
 
         if (userExists) {
             res.status(403).json({ ok: false, msg: 'El usuario ya existe' })
         } else {
-            const encryptedPassword = encrypt(password)
+            const encryptedPassword = await encrypt(password)
 
             try {
                 const user = await User.create({

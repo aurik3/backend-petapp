@@ -1,7 +1,6 @@
-import  { DataTypes, Model } from 'sequelize'
+
+import { DataTypes, Model } from 'sequelize'
 import sequelize from '../config/db'
-
-
 
 export class Clinical extends Model {
     declare id: number
@@ -9,6 +8,7 @@ export class Clinical extends Model {
     declare description: string
     declare date: Date
 }
+
 Clinical.init({
     id: {
         type: DataTypes.INTEGER,
@@ -17,8 +17,8 @@ Clinical.init({
     },
     id_pet: {
         type: DataTypes.INTEGER,
-        references:{
-            model: 'Pet',
+        references: {
+            model: 'Pets',  // Referencia el nombre de la tabla
             key: 'id'
         }
     },
@@ -32,9 +32,8 @@ Clinical.init({
     }
 }, {
     sequelize,
-    modelName: 'Clinical'
+    modelName: 'Clinical',
+    tableName: 'Clinicals'  // Especificamos el nombre de la tabla
 })
-
-
 
 export default Clinical

@@ -1,5 +1,6 @@
 import type { Response,Request } from 'express'
 import Clinical from '../models/Clinical'
+import Pet from '../models/Pets';
 
 
 export class ClinicalController {
@@ -30,7 +31,21 @@ export class ClinicalController {
     static getClinicals = async (req: Request, res: Response) => {
         await Clinical.sync();
         const clinicals = await Clinical.findAll();
-        res.json(clinicals)
+
+        try {
+           const id_pet = clinicals.map(clinical => clinical.id_pet)
+        const pacient = await Pet.findOne({ where: { id: id_pet }})
+
+        const payload = clinicals.map(clinical => ({
+            paciente: pacient.name,
+            ...clinical        
+          }));
+        res.json(payload)
+        } catch (error) {
+            console.log(error)
+        }
+
+      
     }
 
     static updateClinical = async (req: Request, res: Response) => {

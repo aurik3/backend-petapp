@@ -7,7 +7,7 @@ const secretKey = process.env.SECRET_KEY || 'savitar0909';
 export const authToken = async (data:string)=>{   
 
     if (!data) {
-      return  'No token provided'
+      return  false
     }
     const verifyToken = await jwt.verify(data, secretKey)
     return verifyToken

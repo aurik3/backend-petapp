@@ -18,7 +18,6 @@ ClinicalController.getClinicalById
 router.post('/create',
 body('id_pet').notEmpty().withMessage('El campo id_pet es obligatorio'),
 body('description').notEmpty().withMessage('El campo description es obligatorio'),
-body('date').notEmpty().withMessage('El campo date es obligatorio'),
 handleInputErrors,
 validateToken,
 ClinicalController.createClinical
@@ -26,7 +25,6 @@ ClinicalController.createClinical
 router.put('/update/:id',
 body('id_pet').notEmpty().withMessage('El campo id_pet es obligatorio'),
 body('description').notEmpty().withMessage('El campo description es obligatorio'),
-body('date').notEmpty().withMessage('El campo date es obligatorio'),
 handleInputErrors,
 validateToken,
 ClinicalController.updateClinical

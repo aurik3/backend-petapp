@@ -31,15 +31,18 @@ export class ClinicalController {
     static getClinicals = async (req: Request, res: Response) => {
         await Clinical.sync();
         const clinicals = await Clinical.findAll();
+        async function getPetName(id: number) {
+            const pet = await Pet.findOne({ where: { id } });
+            return pet.name;
+        }
 
         try {
-           const id_pet = clinicals.map(clinical => clinical.id_pet)
-        const pacient = await Pet.findOne({ where: { id: id_pet }})
-
-        const payload = clinicals.map(clinical => ({
-            paciente: pacient.name,
-            ...clinical        
-          }));
+            
+            const payload = await Promise.all(clinicals.map(async clinical => ({
+                pacient: await getPetName(clinical.id_pet),
+                ...clinical        
+            })));
+          
         res.json(payload)
         } catch (error) {
             console.log(error)
@@ -50,17 +53,28 @@ export class ClinicalController {
 
     static updateClinical = async (req: Request, res: Response) => {
         await Clinical.sync();
-        const { id, id_pet, description, date } = req.body;
-        const clinical = await Clinical.update({
-            id_pet,
-            description,
-            date
-        }, {
-            where: {
-                id
+        const id = req.params.id;
+        const {id_pet, description } = req.body;
+        console.log(id_pet, description);
+        try {
+            const cli = await Clinical.findOne({
+                where: {
+                    id
+                }               
+            })
+            if(!cli){
+                res.status(404).send('Clinical not found')
+                return;
             }
-        })
-        res.json(clinical)
+            cli.id_pet = id_pet;
+            cli.description = description;
+            await cli.save();
+            res.json(cli)
+        } catch (error) {
+            throw new Error(`Error al actualizar la clinica, error: ${error}`)
+        }
+     
+       
     }
 
     static deleteClinical = async (req: Request, res: Response) => {
